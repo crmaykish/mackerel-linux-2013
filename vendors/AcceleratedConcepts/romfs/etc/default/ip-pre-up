@@ -1,0 +1,4 @@
+#!/bin/sh
+[ "$6" -a -x "/etc/config/$6-pre-up" ] && exec "/etc/config/$6-pre-up"
+[ -x /etc/ppp/ip-pre-up ] && exec /etc/ppp/ip-pre-up "$@"
+exit 0

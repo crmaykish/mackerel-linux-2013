@@ -1,0 +1,57 @@
+--- ModemManager-0.7.990/plugins/novatel/mm-sim-novatel-lte.c.orig	2013-07-02 21:56:40.566374259 +1000
++++ ModemManager-0.7.990/plugins/novatel/mm-sim-novatel-lte.c	2013-07-02 21:57:08.565969060 +1000
+@@ -74,8 +74,8 @@
+     str = mm_strip_tag (response, "+CRSM:");
+ 
+     /* With or without quotes... */
+-    if (sscanf (str, "%d,%d,\"%18c\"", &sw1, &sw2, (char *) &buf) != 3 &&
+-        sscanf (str, "%d,%d,%18c", &sw1, &sw2, (char *) &buf) != 3) {
++    if (sscanf (str, "%d,%d,\"%18s\"", &sw1, &sw2, (char *) &buf) != 3 &&
++        sscanf (str, "%d,%d,%18s", &sw1, &sw2, (char *) &buf) != 3) {
+         g_simple_async_result_set_error (simple,
+                                          MM_CORE_ERROR,
+                                          MM_CORE_ERROR_FAILED,
+--- ModemManager-0.7.990/src/mm-sim.c.orig	2013-07-02 21:58:01.555638911 +1000
++++ ModemManager-0.7.990/src/mm-sim.c	2013-07-02 21:58:05.555642882 +1000
+@@ -927,11 +927,11 @@
+ 
+     memset (buf, 0, sizeof (buf));
+     str = mm_strip_tag (response, "+CRSM:");
+-    if (sscanf (str, "%d,%d,\"%20c\"", &sw1, &sw2, (char *) &buf) == 3)
++    if (sscanf (str, "%d,%d,\"%20s\"", &sw1, &sw2, (char *) &buf) == 3)
+         success = TRUE;
+     else {
+         /* May not include quotes... */
+-        if (sscanf (str, "%d,%d,%20c", &sw1, &sw2, (char *) &buf) == 3)
++        if (sscanf (str, "%d,%d,%20s", &sw1, &sw2, (char *) &buf) == 3)
+             success = TRUE;
+     }
+ 
+@@ -1144,11 +1144,11 @@
+     gchar hex[51];
+ 
+     memset (hex, 0, sizeof (hex));
+-    if (sscanf (response, "+CRSM:%d,%d,\"%50c\"", &sw1, &sw2, (char *) &hex) == 3)
++    if (sscanf (response, "+CRSM:%d,%d,\"%50s\"", &sw1, &sw2, (char *) &hex) == 3)
+         success = TRUE;
+     else {
+         /* May not include quotes... */
+-        if (sscanf (response, "+CRSM:%d,%d,%50c", &sw1, &sw2, (char *) &hex) == 3)
++        if (sscanf (response, "+CRSM:%d,%d,%50s", &sw1, &sw2, (char *) &hex) == 3)
+             success = TRUE;
+     }
+ 
+@@ -1281,11 +1281,11 @@
+     gchar hex[51];
+ 
+     memset (hex, 0, sizeof (hex));
+-    if (sscanf (response, "+CRSM:%d,%d,\"%50c\"", &sw1, &sw2, (char *) &hex) == 3)
++    if (sscanf (response, "+CRSM:%d,%d,\"%50s\"", &sw1, &sw2, (char *) &hex) == 3)
+         success = TRUE;
+     else {
+         /* May not include quotes... */
+-        if (sscanf (response, "+CRSM:%d,%d,%50c", &sw1, &sw2, (char *) &hex) == 3)
++        if (sscanf (response, "+CRSM:%d,%d,%50s", &sw1, &sw2, (char *) &hex) == 3)
+             success = TRUE;
+     }
+ 

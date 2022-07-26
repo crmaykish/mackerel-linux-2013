@@ -1,0 +1,11 @@
+--- libubox/utils.h.orig	2013-05-10 15:05:06.550437190 +1000
++++ libubox/utils.h	2013-05-10 15:05:08.550383096 +1000
+@@ -101,7 +101,7 @@
+ 
+ #define __u_bswap16(x) ({ uint16_t val = (x); ((uint16_t)(((val >> 8) & 0xffu) | ((val & 0xffu) << 8))); })
+ 
+-#if _GNUC_MIN_VER(4, 2)
++#if _GNUC_MIN_VER(4, 3)
+ #define __u_bswap32(x) __builtin_bswap32(x)
+ #define __u_bswap64(x) __builtin_bswap64(x)
+ #else

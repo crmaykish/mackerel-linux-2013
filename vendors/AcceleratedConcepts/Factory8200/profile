@@ -1,0 +1,12 @@
+#!/bin/sh
+
+trap "" 1 2 15
+
+while [ -f /factory/factory.sh ]; do
+	cd /factory
+	sh factory.sh
+	stty sane # just in case is crashes
+done
+
+echo "Factory test flash is not present"
+

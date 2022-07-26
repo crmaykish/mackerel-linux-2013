@@ -1,0 +1,24 @@
+############################################################################
+#
+# Vendor specific settings
+#
+
+KERNEL_EXTRA_CFLAGS = 
+VENDOR_CFLAGS = 
+VENDOR_TOPDIRS = include
+export VENDOR_TOPDIRS
+
+VERSIONPKG = 0.0.1
+VERSIONSTR = $(CONFIG_VENDOR)/$(CONFIG_PRODUCT) Version $(VERSIONPKG)
+
+############################################################################
+
+ifeq ($(UCLINUX_BUILD_LIB)$(UCLINUX_BUILD_USER)$(CONFIG_DEFAULTS_KERNEL_2_4),y)
+CROSS_COMPILE := i386-linux-20030902-
+else
+CROSS_COMPILE := i386-linux-20070808-
+endif
+
+include $(ROOTDIR)/vendors/config/i386/config.arch
+
+############################################################################

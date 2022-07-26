@@ -1,0 +1,47 @@
+############################################################################
+
+ifeq ($(ROOTDIR)/boot,$(wildcard $(ROOTDIR)/boot))
+VENDOR_TOPDIRS = boot
+endif
+
+LINUXTARGET = vmlinux.bin
+
+# To override the vendor-global version do something like:
+VERSIONPKG = 0.0.0
+# HW_VENDOR	= ?????
+HW_PRODUCT	= 8200
+RELFILES = boot/boot.elf images/image.bin,.sgu $(LINUXDIR)/vmlinux
+
+############################################################################
+
+CPUFLAGS      = -march=octeon -mabi=64 #-muclibc -melf32btsmipn32
+CPUFLAGS      += -msoft-float
+CPU_CFLAGS    = -march=octeon -mabi=64 #-muclibc -melf32btsmipn32
+CPU_CFLAGS    += -msoft-float
+TARGETARCH    = mips64-linux
+CONFIGURE_HOST= mips64-linux
+ENDIAN        = big
+
+#CROSS_COMPILE := mips64-octeon-linux-SDKv181-gnu-
+CROSS_COMPILE := mips64-octeon-linux-gnu-SDKv190-
+ifeq ($(shell which $(CROSS_COMPILE)gcc),)
+CROSS_COMPILE  = mips64-octeon-linux-gnu-
+endif
+
+OCTEON_MODEL := OCTEON_CN50XX
+OCTEON_CPPFLAGS_GLOBAL_ADD :=
+export OCTEON_MODEL OCTEON_CPPFLAGS_GLOBAL_ADD
+
+############################################################################
+
+include $(ROOTDIR)/vendors/config/mips/config.arch
+
+RELFILES += images/configs.tar.gz
+
+ifdef UCLINUX_BUILD_BOOT
+	BOOTFLAGS += -DCONFIG_NOSERIAL
+	BOOTFLAGS += -DCONFIG_CRYPTO=1 -DCONFIG_CRYPTO_DOUBLE=1
+	CONFIG_OCTEON_ETH=y
+endif
+
+############################################################################

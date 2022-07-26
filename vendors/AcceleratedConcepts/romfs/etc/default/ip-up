@@ -1,0 +1,4 @@
+#!/bin/sh
+[ "$6" -a -x "/etc/config/$6-up" ] && exec "/etc/config/$6-up"
+[ -x /etc/ppp/ip-up ] && exec /etc/ppp/ip-up "$@"
+exit 0

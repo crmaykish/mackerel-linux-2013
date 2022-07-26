@@ -1,0 +1,25 @@
+############################################################################
+
+ifeq ($(ROOTDIR)/boot,$(wildcard $(ROOTDIR)/boot))
+VENDOR_TOPDIRS = boot
+endif
+
+VENDOR_CFLAGS = -DCONFIG_ACCELECON
+
+LINUXTARGET = zImage dtbs
+
+HW_VENDOR = AcceleratedConcepts
+VERSIONPKG = 1.0.2-rm
+VERSIONSTR = $(CONFIG_VENDOR)/$(CONFIG_PRODUCT) Version $(VERSIONPKG)
+
+RELFILES = $(LINUXDIR)/vmlinux
+
+############################################################################
+
+CPUFLAGS = -msoft-float
+
+include $(ROOTDIR)/vendors/config/arm/config.arch
+
+RELFILES += images/configs.tar.gz
+
+############################################################################

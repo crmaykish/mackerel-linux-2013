@@ -1,0 +1,11 @@
+--- netifd/CMakeLists.txt.orig	2013-05-10 21:48:15.500694535 +1000
++++ netifd/CMakeLists.txt	2013-05-10 21:48:27.850741336 +1000
+@@ -1,7 +1,7 @@
+ cmake_minimum_required(VERSION 2.6)
+ 
+ PROJECT(netifd C)
+-ADD_DEFINITIONS(-Os -Wall -Werror --std=gnu99 -Wmissing-declarations)
++ADD_DEFINITIONS(-Os --std=gnu99 -Wmissing-declarations)
+ 
+ SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+ 
