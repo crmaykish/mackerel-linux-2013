@@ -79,16 +79,19 @@ romfs:
 
 image:
 	[ -d $(IMAGEDIR) ] || mkdir -p $(IMAGEDIR)
+
 	genromfs -v -V "ROMdisk" -f $(ROMFSIMG) -d $(ROMFSDIR)
+
 	$(CROSS_COMPILE)objcopy -O binary --remove-section=.romvec \
 			--remove-section=.text --remove-section=.ramvec \
 			--remove-section=.bss --remove-section=.eram \
 			$(ROOTDIR)/$(LINUXDIR)/linux $(IMAGEDIR)/linux.data
+
 	$(CROSS_COMPILE)objcopy -O binary --remove-section=.ramvec \
 			--remove-section=.bss --remove-section=.data \
 			--remove-section=.eram \
 			--set-section-flags=.romvec=CONTENTS,ALLOC,LOAD,READONLY,CODE \
 			$(ROOTDIR)/$(LINUXDIR)/linux $(IMAGEDIR)/linux.text
-	cat $(IMAGEDIR)/linux.text $(IMAGEDIR)/linux.data $(ROMFSIMG) > $(IMAGE)
-	[ -n "$(NO_BUILD_INTO_TFTPBOOT)" ] || cp $(IMAGE) /tftpboot
+
+	cat $(IMAGEDIR)/linux.text $(IMAGEDIR)/linux.data > $(IMAGE)
 

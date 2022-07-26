@@ -456,6 +456,7 @@ void __init __weak thread_info_cache_init(void)
  */
 static void __init mm_init(void)
 {
+	printk("mm_init()\r\n");
 	/*
 	 * page_cgroup requires contiguous pages,
 	 * bigger than MAX_ORDER unless SPARSEMEM.
@@ -466,6 +467,8 @@ static void __init mm_init(void)
 	percpu_init_late();
 	pgtable_cache_init();
 	vmalloc_init();
+
+	printk("mm_init() done\r\n");
 }
 
 asmlinkage void __init start_kernel(void)

@@ -1657,6 +1657,42 @@ asmlinkage int printk_emit(int facility, int level,
 }
 EXPORT_SYMBOL(printk_emit);
 
+
+#define MFP_UCR 0x3F0029 // USART Control Register
+#define MFP_RSR 0x3F002B // USART Receiver Status Register
+#define MFP_TSR 0x3F002D // USART Transmitter Status Register
+#define MFP_UDR 0x3F002F // USART Data Register
+
+// Get the value at a memory address
+#define MEM(address) (*(volatile unsigned char *)(address))
+
+
+void mfp_putc(char s)
+{
+    while ((MEM(MFP_TSR) & 0b10000000) == 0)
+    {
+    }
+
+    MEM(MFP_UDR) = s;
+
+    if (s == '\n')
+    {
+        mfp_putc('\r');
+    }
+}
+
+void mfp_puts(const char *s)
+{
+    unsigned i = 0;
+
+    while (s[i] != 0)
+    {
+        mfp_putc(s[i]);
+        i++;
+    }
+}
+
+
 /**
  * printk - print a kernel message
  * @fmt: format string
@@ -1683,16 +1719,10 @@ asmlinkage int printk(const char *fmt, ...)
 	va_list args;
 	int r;
 
-#ifdef CONFIG_KGDB_KDB
-	if (unlikely(kdb_trap_printk)) {
-		va_start(args, fmt);
-		r = vkdb_printf(fmt, args);
-		va_end(args);
-		return r;
-	}
-#endif
+	char buf[512];
 	va_start(args, fmt);
-	r = vprintk_emit(0, -1, NULL, 0, fmt, args);
+	r = vscnprintf(buf, sizeof(buf), fmt, args);
+	mfp_puts(buf);
 	va_end(args);
 
 	return r;

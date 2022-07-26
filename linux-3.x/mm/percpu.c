@@ -1928,6 +1928,8 @@ void __init percpu_init_late(void)
 	unsigned long flags;
 	int i;
 
+	printk("percpu_init_late()\r\n");
+
 	for (i = 0; (chunk = target_chunks[i]); i++) {
 		int *map;
 		const size_t size = PERCPU_DYNAMIC_EARLY_SLOTS * sizeof(map[0]);

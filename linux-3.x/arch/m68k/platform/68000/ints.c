@@ -76,68 +76,70 @@ asmlinkage irqreturn_t inthandler7(void);
  */
 void process_int(int vec, struct pt_regs *fp)
 {
-	int irq;
-	int mask;
+	printk("Skipping process_int()\r\n");
 
-	unsigned long pend = ISR;
+	// int irq;
+	// int mask;
 
-	while (pend) {
-		if (pend & 0x0000ffff) {
-			if (pend & 0x000000ff) {
-				if (pend & 0x0000000f) {
-					mask = 0x00000001;
-					irq = 0;
-				} else {
-					mask = 0x00000010;
-					irq = 4;
-				}
-			} else {
-				if (pend & 0x00000f00) {
-					mask = 0x00000100;
-					irq = 8;
-				} else {
-					mask = 0x00001000;
-					irq = 12;
-				}
-			}
-		} else {
-			if (pend & 0x00ff0000) {
-				if (pend & 0x000f0000) {
-					mask = 0x00010000;
-					irq = 16;
-				} else {
-					mask = 0x00100000;
-					irq = 20;
-				}
-			} else {
-				if (pend & 0x0f000000) {
-					mask = 0x01000000;
-					irq = 24;
-				} else {
-					mask = 0x10000000;
-					irq = 28;
-				}
-			}
-		}
+	// unsigned long pend = ISR;
 
-		while (! (mask & pend)) {
-			mask <<=1;
-			irq++;
-		}
+	// while (pend) {
+	// 	if (pend & 0x0000ffff) {
+	// 		if (pend & 0x000000ff) {
+	// 			if (pend & 0x0000000f) {
+	// 				mask = 0x00000001;
+	// 				irq = 0;
+	// 			} else {
+	// 				mask = 0x00000010;
+	// 				irq = 4;
+	// 			}
+	// 		} else {
+	// 			if (pend & 0x00000f00) {
+	// 				mask = 0x00000100;
+	// 				irq = 8;
+	// 			} else {
+	// 				mask = 0x00001000;
+	// 				irq = 12;
+	// 			}
+	// 		}
+	// 	} else {
+	// 		if (pend & 0x00ff0000) {
+	// 			if (pend & 0x000f0000) {
+	// 				mask = 0x00010000;
+	// 				irq = 16;
+	// 			} else {
+	// 				mask = 0x00100000;
+	// 				irq = 20;
+	// 			}
+	// 		} else {
+	// 			if (pend & 0x0f000000) {
+	// 				mask = 0x01000000;
+	// 				irq = 24;
+	// 			} else {
+	// 				mask = 0x10000000;
+	// 				irq = 28;
+	// 			}
+	// 		}
+	// 	}
 
-		do_IRQ(irq, fp);
-		pend &= ~mask;
-	}
+	// 	while (! (mask & pend)) {
+	// 		mask <<=1;
+	// 		irq++;
+	// 	}
+
+	// 	do_IRQ(irq, fp);
+	// 	pend &= ~mask;
+	// }
 }
 
 static void intc_irq_unmask(struct irq_data *d)
 {
-	IMR &= ~(1 << d->irq);
+	// IMR &= ~(1 << d->irq);
 }
 
 static void intc_irq_mask(struct irq_data *d)
 {
-	IMR |= (1 << d->irq);
+	// IMR |= (1 << d->irq);
 }
 
 static struct irq_chip intc_irq_chip = {
@@ -153,6 +155,8 @@ static struct irq_chip intc_irq_chip = {
 void __init trap_init(void)
 {
 	int i;
+
+	printk("trap_init()\r\n");
 
 	/* set up the vectors */
 	for (i = 72; i < 256; ++i)
@@ -171,16 +175,17 @@ void __init trap_init(void)
 
 void __init init_IRQ(void)
 {
-	int i;
+	printk("Skip init_IRQ()\r\n");
+	// int i;
 
-	IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
+	// IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
 
-	/* turn off all interrupts */
-	IMR = ~0;
+	// /* turn off all interrupts */
+	// IMR = ~0;
 
-	for (i = 0; (i < NR_IRQS); i++) {
-		irq_set_chip(i, &intc_irq_chip);
-		irq_set_handler(i, handle_level_irq);
-	}
+	// for (i = 0; (i < NR_IRQS); i++) {
+	// 	irq_set_chip(i, &intc_irq_chip);
+	// 	irq_set_handler(i, handle_level_irq);
+	// }
 }
 
