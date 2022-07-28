@@ -100,6 +100,7 @@ static inline void page_cgroup_init(void)
 
 static inline void __init page_cgroup_init_flatmem(void)
 {
+	printk("page_cgroup_init_flatmem() INLINE\r\n");
 }
 
 #endif /* CONFIG_MEMCG */

@@ -1932,6 +1932,9 @@ void __init percpu_init_late(void)
 
 	for (i = 0; (chunk = target_chunks[i]); i++) {
 		int *map;
+
+		printk("percpu loop\r\n");
+
 		const size_t size = PERCPU_DYNAMIC_EARLY_SLOTS * sizeof(map[0]);
 
 		BUILD_BUG_ON(size > PAGE_SIZE);
@@ -1944,4 +1947,6 @@ void __init percpu_init_late(void)
 		chunk->map = map;
 		spin_unlock_irqrestore(&pcpu_lock, flags);
 	}
+
+	printk("percpu loop done\r\n");
 }

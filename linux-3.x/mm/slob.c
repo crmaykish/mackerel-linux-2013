@@ -159,8 +159,13 @@ static void set_slob(slob_t *s, slobidx_t size, slob_t *next)
  */
 static slobidx_t slob_units(slob_t *s)
 {
+	printk("slob_units(), s = %p\r\n", s);
+
 	if (s->units > 0)
 		return s->units;
+
+	printk("slob_units() done\r\n");
+
 	return 1;
 }
 
@@ -172,10 +177,15 @@ static slob_t *slob_next(slob_t *s)
 	slob_t *base = (slob_t *)((unsigned long)s & PAGE_MASK);
 	slobidx_t next;
 
+	printk("slob_next(), s = %p\r\n", s);
+
 	if (s[0].units < 0)
 		next = -s[0].units;
 	else
 		next = s[1].units;
+
+	printk("slob_next() return: %p\r\n", base+next);
+
 	return base+next;
 }
 
@@ -218,6 +228,12 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
 {
 	slob_t *prev, *cur, *aligned = NULL;
 	int delta = 0, units = SLOB_UNITS(size);
+
+	printk("prev: %p cur: %p aligned: %p\r\n", prev, cur, aligned);
+	printk("units: %d\r\n", units);
+
+	printk("slob_page_alloc(): %p\r\n", sp);
+	printk("sp->freelist: %p\r\n", sp->freelist);
 
 	for (prev = NULL, cur = sp->freelist; ; prev = cur, cur = slob_next(cur)) {
 		slobidx_t avail = slob_units(cur);
@@ -273,6 +289,8 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 	slob_t *b = NULL;
 	unsigned long flags;
 
+	printk("slob_alloc()\r\n");
+
 	if (size < SLOB_BREAK1)
 		slob_list = &free_slob_small;
 	else if (size < SLOB_BREAK2)
@@ -292,11 +310,14 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 			continue;
 #endif
 		/* Enough room on this page? */
-		if (sp->units < SLOB_UNITS(size))
+	if (sp->units < SLOB_UNITS(size))
 			continue;
 
 		/* Attempt to alloc */
 		prev = sp->list.prev;
+
+		printk("prev: %p\r\n", prev);
+
 		b = slob_page_alloc(sp, size, align);
 		if (!b)
 			continue;
@@ -429,6 +450,8 @@ __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
 	unsigned int *m;
 	int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
 	void *ret;
+
+	printk("__do_kmalloc_node()\r\n");
 
 	gfp &= gfp_allowed_mask;
 

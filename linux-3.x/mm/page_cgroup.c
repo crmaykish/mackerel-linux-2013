@@ -68,8 +68,13 @@ void __init page_cgroup_init_flatmem(void)
 
 	int nid, fail;
 
+	prinkt("page_cgroup_init_flatmem()\r\n");
+
 	if (mem_cgroup_disabled())
+	{
+		printk("mem_cgroup is disabled\r\n");
 		return;
+	}
 
 	for_each_online_node(nid)  {
 		fail = alloc_node_page_cgroup(nid);

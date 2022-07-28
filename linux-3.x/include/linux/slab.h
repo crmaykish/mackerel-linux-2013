@@ -515,7 +515,8 @@ static inline void *kmem_cache_zalloc(struct kmem_cache *k, gfp_t flags)
  * @flags: the type of memory to allocate (see kmalloc).
  */
 static inline void *kzalloc(size_t size, gfp_t flags)
-{
+{	
+	printk("kzalloc()\r\n");
 	return kmalloc(size, flags | __GFP_ZERO);
 }
 

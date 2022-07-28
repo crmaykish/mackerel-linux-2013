@@ -154,9 +154,14 @@ void __init mem_init(void)
 	int initpages = 0;
 	int i;
 
+	printk("mem_init()\r\n");
+
 	/* this will put all memory onto the freelists */
 	totalram_pages = num_physpages = 0;
 	for_each_online_pgdat(pgdat) {
+
+		printk("for_each_online_pgdat()\r\n");
+
 		num_physpages += pgdat->node_present_pages;
 
 		totalram_pages += free_all_bootmem_node(pgdat);
@@ -164,8 +169,9 @@ void __init mem_init(void)
 			struct page *page = pgdat->node_mem_map + i;
 			char *addr = page_to_virt(page);
 
-			if (!PageReserved(page))
+			if (!PageReserved(page)){
 				continue;
+			}
 			if (addr >= _text &&
 			    addr < _etext)
 				codepages++;
@@ -176,19 +182,6 @@ void __init mem_init(void)
 				datapages++;
 		}
 	}
-
-#if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
-	/* insert pointer tables allocated so far into the tablelist */
-	init_pointer_table((unsigned long)kernel_pg_dir);
-	for (i = 0; i < PTRS_PER_PGD; i++) {
-		if (pgd_present(kernel_pg_dir[i]))
-			init_pointer_table(__pgd_page(kernel_pg_dir[i]));
-	}
-
-	/* insert also pointer table that we used to unmap the zero page */
-	if (zero_pgtable)
-		init_pointer_table((unsigned long)zero_pgtable);
-#endif
 
 	pr_info("Memory: %luk/%luk available (%dk kernel code, %dk data, %dk init)\n",
 	       nr_free_pages() << (PAGE_SHIFT-10),

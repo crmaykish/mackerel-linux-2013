@@ -265,9 +265,14 @@ static void reset_node_lowmem_managed_pages(pg_data_t *pgdat)
  */
 unsigned long __init free_all_bootmem_node(pg_data_t *pgdat)
 {
+	printk("free_all_bootmem_node()\r\n");
 	register_page_bootmem_info_node(pgdat);
 	reset_node_lowmem_managed_pages(pgdat);
-	return free_all_bootmem_core(pgdat->bdata);
+	unsigned long a = free_all_bootmem_core(pgdat->bdata);
+
+	printk("free_all_bootmem_node() RETURN\r\n");
+
+	return a;
 }
 
 /**
