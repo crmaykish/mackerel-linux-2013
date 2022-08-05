@@ -229,13 +229,17 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
 	slob_t *prev, *cur, *aligned = NULL;
 	int delta = 0, units = SLOB_UNITS(size);
 
-	printk("prev: %p cur: %p aligned: %p\r\n", prev, cur, aligned);
+	printk("slob_page_alloc params: %p, %lu, %lu\r\n", sp, size, align);
+
+	
 	printk("units: %d\r\n", units);
 
-	printk("slob_page_alloc(): %p\r\n", sp);
 	printk("sp->freelist: %p\r\n", sp->freelist);
 
 	for (prev = NULL, cur = sp->freelist; ; prev = cur, cur = slob_next(cur)) {
+
+		printk("prev: %p cur: %p aligned: %p\r\n", prev, cur, aligned);
+		
 		slobidx_t avail = slob_units(cur);
 
 		if (align) {
@@ -292,33 +296,46 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 	printk("slob_alloc()\r\n");
 
 	if (size < SLOB_BREAK1)
+	{
 		slob_list = &free_slob_small;
+	}
 	else if (size < SLOB_BREAK2)
+	{
+		printk("free slob medium\r\n");
 		slob_list = &free_slob_medium;
+	}
 	else
+	{
 		slob_list = &free_slob_large;
+	}
 
 	spin_lock_irqsave(&slob_lock, flags);
+
+	printk("sp: %p, slob_list: %p\r\n", sp, slob_list);
+
 	/* Iterate through each partially free page, try to find room */
 	list_for_each_entry(sp, slob_list, list) {
-#ifdef CONFIG_NUMA
-		/*
-		 * If there's a node specification, search for a partial
-		 * page with a matching node id in the freelist.
-		 */
-		if (node != NUMA_NO_NODE && page_to_nid(sp) != node)
-			continue;
-#endif
+
+		printk("sp->units: %d, size: %d\r\n", sp->units, SLOB_UNITS(size));
+
 		/* Enough room on this page? */
-	if (sp->units < SLOB_UNITS(size))
+		if (sp->units < SLOB_UNITS(size))
+		{
+			printk("units < SLOB_UNITS\r\n");
 			continue;
+		}
 
 		/* Attempt to alloc */
 		prev = sp->list.prev;
 
-		printk("prev: %p\r\n", prev);
+		printk("sp: %p, prev: %p\r\n", sp, prev);
+
+		printk("slob_page_alloc() IN\r\n");
 
 		b = slob_page_alloc(sp, size, align);
+
+		printk("slob_page_alloc() OUT\r\n");
+
 		if (!b)
 			continue;
 
@@ -330,6 +347,9 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 			list_move_tail(slob_list, prev->next);
 		break;
 	}
+
+
+
 	spin_unlock_irqrestore(&slob_lock, flags);
 
 	/* Not enough space: must allocate a new page */

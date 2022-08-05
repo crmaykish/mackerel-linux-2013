@@ -84,6 +84,7 @@ void __init m68k_setup_node(int node)
  */
 void __init paging_init(void)
 {
+
 	/*
 	 * Make sure start_mem is page aligned, otherwise bootmem and
 	 * page_alloc get different views of the world.
@@ -91,10 +92,18 @@ void __init paging_init(void)
 	unsigned long end_mem = memory_end & PAGE_MASK;
 	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
 
+
+	printk("paging_init()\r\n");
+
+
 	high_memory = (void *) end_mem;
 
 	empty_zero_page = alloc_bootmem_pages(PAGE_SIZE);
 	memset(empty_zero_page, 0, PAGE_SIZE);
+
+
+	printk("end_mem: %lu, high_memory: %p, empty_zero_page: %p\r\n", end_mem, high_memory, empty_zero_page);
+
 
 	/*
 	 * Set up SFC/DFC registers (user data space).

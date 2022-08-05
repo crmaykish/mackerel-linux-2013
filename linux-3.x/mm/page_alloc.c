@@ -2857,9 +2857,12 @@ static unsigned long nr_free_zone_pages(int offset)
 	for_each_zone_zonelist(zone, z, zonelist, offset) {
 		unsigned long size = zone->managed_pages;
 		unsigned long high = high_wmark_pages(zone);
+		printk("zone size: %lu, high: %lu\r\n", size, high);
 		if (size > high)
 			sum += size - high;
 	}
+
+	printk("sum: %lu\r\n", sum);
 
 	return sum;
 }
@@ -3729,6 +3732,9 @@ void __ref build_all_zonelists(pg_data_t *pgdat, struct zone *zone)
 		page_group_by_mobility_disabled = 1;
 	else
 		page_group_by_mobility_disabled = 0;
+
+
+	printk("current_zonelist_order: %ld\r\n", current_zonelist_order);
 
 	printk("Built %i zonelists in %s order, mobility grouping %s.  "
 		"Total pages: %ld\n",
